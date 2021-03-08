@@ -1,8 +1,9 @@
 ﻿using Backend.Problem;
+using Backend.Solution;
+using Backend.Solution.Algorithms;
 using Backend.UtilityClasses;
+using ConsoleMenu.UtilityClasses;
 using System;
-using System.IO;
-using System.Reflection;
 
 namespace ConsoleMenu
 {
@@ -10,13 +11,24 @@ namespace ConsoleMenu
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
 
-            int[] xd = new int[100];
-            Console.WriteLine(xd.Length);
+            foreach (Chromosome solution in ChromosomeTesting.GetBasicSolutions())
+            {
+                Console.WriteLine(solution.GetSolutionInfo());
+                Console.WriteLine("-----------------------------");
+            }
+            ProblemPCB problem = new ProblemPCB(Globals.PathFile + "\\zad0.txt");
+            // Random Algorithm
+            Chromosome randSolution = new RandomSolutionPCB().GetSolution(problem,100);
 
-            ProblemPCB problem = new ProblemPCB(Globals.PathFile+"\\zad0.txt");
-            int x = 0;
+            randSolution.GetSolutionInfo();
+
+            problem = new ProblemPCB(Globals.PathFile + "\\zad1.txt");
+            // Random Algorithm
+            randSolution = new RandomSolutionPCB().GetSolution(problem, 100);
+
+            randSolution.GetSolutionInfo();
+            int x = 1;
         }
     }
 }
