@@ -20,5 +20,8 @@ namespace Backend.UtilityClasses
         public const double PathsOffBoardPW = 15;
         public const double PathsLengthOffBoardPW = 5;
         public const int MaxNumberOfSegments = 30;
+
+
+        public const int DefaultTournamentSize = 30;
     }
 }
