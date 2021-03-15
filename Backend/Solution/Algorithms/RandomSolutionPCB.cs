@@ -14,7 +14,6 @@ namespace Backend.Solution.Algorithms
                 Paths = new List<Path>()
             };
 
-            var r = new Random();
             foreach (Tuple<Point, Point> pointTuple in problem.PointPairs)
             {
                 // In the beggining starting point is our last point
@@ -47,7 +46,7 @@ namespace Backend.Solution.Algorithms
                     if (lastPoint.X != 0 && prevDirection != Globals.Right)
                         availableDirections.Add(Globals.Left);
 
-                    char direction = availableDirections[r.Next(0, availableDirections.Count - 1)];
+                    char direction = availableDirections[Rnd.Next(0, availableDirections.Count - 1)];
                     
                     int length;
                     newSegment.Direction = direction;
@@ -55,7 +54,7 @@ namespace Backend.Solution.Algorithms
                     // Random length
                     if (direction == Globals.Up)
                     {
-                        length = r.Next(1, problem.Height - lastPoint.Y);
+                        length = Rnd.Next(1, problem.Height - lastPoint.Y);
 
                         // We have a length and direction, lets check if destination point is on its path
                         for (int i = 1; i <= length; i++)
@@ -74,7 +73,7 @@ namespace Backend.Solution.Algorithms
                     }
                     else if (direction == Globals.Down)
                     {
-                        length = r.Next(1, lastPoint.Y);
+                        length = Rnd.Next(1, lastPoint.Y);
 
                         // We have a length and direction, lets check if destination point is on its path
                         for (int i = 1; i <= length; i++)
@@ -92,7 +91,7 @@ namespace Backend.Solution.Algorithms
                     }
                     else if (direction == Globals.Right)
                     {
-                        length = r.Next(1, problem.Width - lastPoint.X);
+                        length = Rnd.Next(1, problem.Width - lastPoint.X);
 
                         // We have a length and direction, lets check if destination point is on its path
                         for (int i = 1; i <= length; i++)
@@ -110,7 +109,7 @@ namespace Backend.Solution.Algorithms
                     }
                     else // Left
                     {
-                        length = r.Next(1, lastPoint.X);
+                        length = Rnd.Next(1, lastPoint.X);
 
                         // We have a length and direction, lets check if destination point is on its path
                         for (int i = 1; i <= length; i++)

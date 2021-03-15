@@ -1,15 +1,14 @@
 ﻿using Backend.Problem;
 using Backend.Solution;
-using Backend.UtilityClasses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleMenu.UtilityClasses
+namespace Backend.UtilityClasses
 {
-    public static class ChromosomeTesting
+    public class ChromosomeTesting
     {
         public static List<Chromosome> GetBasicSolutions()
         {
@@ -152,10 +151,52 @@ namespace ConsoleMenu.UtilityClasses
                 }
             };
 
+            Chromosome chromosome4 = new Chromosome(problem);
+            chromosome4.Paths = new List<Path>(){
+                new Path()
+                {
+                   StartingPoint = chromosome.Problem.PointPairs[0].Item1,
+                   Segments = new List<Segment>(){
+                       new Segment()
+                       {
+                           Direction = Globals.Right,
+                           Length = 2
+                       },
+                       new Segment()
+                       {
+                           Direction = Globals.Up,
+                           Length = 3
+                       },
+                       new Segment()
+                       {
+                           Direction = Globals.Right,
+                           Length = 2
+                       },
+                       new Segment()
+                       {
+                           Direction = Globals.Down,
+                           Length = 3
+                       }
+                   }
+                },
+                new Path()
+                {
+                   StartingPoint = chromosome.Problem.PointPairs[1].Item1,
+                   Segments = new List<Segment>(){
+                       new Segment()
+                       {
+                           Direction = Globals.Up,
+                           Length = 2
+                       }
+                   }
+                }
+            };
+
             return new List<Chromosome>(){
                 chromosome,
                 chromosome2,
-                chromosome3
+                chromosome3,
+                chromosome4
             };
         }
     }

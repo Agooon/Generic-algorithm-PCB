@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Backend.Solution.Algorithms.GenericFunctionality
 {
@@ -17,6 +13,6 @@ namespace Backend.Solution.Algorithms.GenericFunctionality
             Rnd = new Random(seed);
         }
         public Random Rnd { get; set; }
-        public abstract Chromosome Select(Chromosome[] population);
+        public abstract ref Chromosome Select(ref Chromosome[] population);
     }
 }
