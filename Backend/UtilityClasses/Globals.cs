@@ -21,5 +21,10 @@ namespace Backend.UtilityClasses
         public const double PathsLengthOffBoardPW = 5;
         public const int MaxNumberOfSegments = 30;
 
+
+        // Pm - for making any mutatation possible
+        public const double Pm = 1;
+        // PmP - for checking whether the Path will mutate
+        public const double PmP = 1;
     }
 }

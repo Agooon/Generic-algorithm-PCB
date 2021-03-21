@@ -37,7 +37,7 @@ namespace Backend.Solution
             List<Point> points = new List<Point>();
             foreach (Path path in Paths)
             {
-                points.AddRange(path.GetAllPoints());
+                points.AddRange(path.RestartPoints());
             }
 
             crossAmount += points.GroupBy(x => new { x.X, x.Y }).Where(x => x.Count() > 1).Sum(_ => _.Count() - 1);
