@@ -7,10 +7,7 @@ namespace Backend.Solution
 {
     public class Chromosome
     {
-        public Chromosome(ProblemPCB problem)
-        {
-            Problem = problem;
-        }
+        
         public double PenaltyPoints { get; set; }
         // PW - Penalty weight, for evaluation function
         public double CrossSegmentPW { get; set; } = Globals.CrossSegmentPW;
@@ -27,9 +24,19 @@ namespace Backend.Solution
         public int PathsLengthOffBoard { get; set; }
 
         public List<Path> Paths { get; set; }
-
         public ProblemPCB Problem { get; set; }
 
+        public Chromosome(ProblemPCB problem)
+        {
+            Problem = problem;
+        }
+
+        public Chromosome(Chromosome solution)
+        {
+            Paths = solution.Paths.ConvertAll(x => x.Clone());
+            Problem = solution.Problem;
+            PenaltyPoints = solution.PenaltyPoints;
+        }
         // 1
         public int GetCrossCount()
         {
@@ -111,8 +118,20 @@ namespace Backend.Solution
             info += ("\nPathsOffBoard:       " + PathsOffBoard);
             info += ("\nPathsLengthOffBoard: " + PathsLengthOffBoard);
             info += ("\n\nPenaltyPoints:       " + PenaltyPoints);
+            info += GetPathsString();
 
             return info;
+        }
+
+        public string GetPathsString()
+        {
+            string pathString = "";
+            int ind = 1;
+            foreach (Path path in Paths)
+            {
+                pathString += "\nPath nr "+ind++ +":\n" + path.GetStringPath();
+            }
+            return pathString;
         }
     }
 }

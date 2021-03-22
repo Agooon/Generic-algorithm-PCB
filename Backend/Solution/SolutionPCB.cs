@@ -5,6 +5,7 @@ namespace Backend.Solution.Algorithms
 {
     public abstract class SolutionPCB
     {
+        public Random Rnd { get; set; }
         public SolutionPCB()
         {
             Rnd = new Random();
@@ -13,7 +14,6 @@ namespace Backend.Solution.Algorithms
         {
             Rnd = new Random(seed);
         }
-        public Random Rnd { get; set; }
         public abstract Chromosome GetSolution(ProblemPCB problem);
         public abstract Chromosome GetSolution(ProblemPCB problem, int iterations);
     }

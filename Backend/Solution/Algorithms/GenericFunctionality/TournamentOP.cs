@@ -11,23 +11,15 @@
 
         public override ref Chromosome Select(ref Chromosome[] population)
         {
-            int bestInd = Rnd.Next(0, population.Length);
-            int newInd;
-            // Getting solution to fight
-            for (int i=1;i< (population.Length/2) + 1; i++)
-            {
-                newInd = Rnd.Next(0, population.Length );
-                if (population[newInd].PenaltyPoints < population[bestInd].PenaltyPoints)
-                    bestInd = newInd;
-            }
-            return ref population[bestInd];
+            return ref Select(ref population, population.Length / 2);
         }
-        public ref Chromosome Select(ref Chromosome[] population, int tournamentSize)
+
+        public override ref Chromosome Select(ref Chromosome[] population, int value)
         {
             int bestInd = Rnd.Next(0, population.Length);
             int newInd;
             // Getting solution to fight
-            for (int i = 1; i < tournamentSize; i++)
+            for (int i = 1; i < value; i++)
             {
                 newInd = Rnd.Next(0, population.Length);
                 if (population[newInd].PenaltyPoints < population[bestInd].PenaltyPoints)
@@ -35,7 +27,5 @@
             }
             return ref population[bestInd];
         }
-
-        
     }
 }

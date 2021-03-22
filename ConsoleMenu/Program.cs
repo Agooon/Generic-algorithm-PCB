@@ -11,7 +11,61 @@ namespace ConsoleMenu
     {
         static void Main(string[] args)
         {
+            //Chromosome[] population = ChromosomeTesting.GetBasicSolutions().ToArray();
+            //population[0].Paths[0].FixPath();
+            ProblemPCB problem = new ProblemPCB(Globals.PathFile + "\\zad1.txt");
 
+            GenericSolutionPCB genAlg = new GenericSolutionPCB()
+            {
+                AmountOfPopulation = 100,
+                Pm = 0.2,
+                Px = 0.5,
+                TourmanteSize = 5
+            };
+            var populations = genAlg.GetSolutionData(problem, 4000);
+            Console.WriteLine("\n------------------\n");
+
+
+            int ind = 1;
+            int bestGenSolInd = 1;
+            Chromosome bestSolOfAll = populations[0][0];
+            foreach (Chromosome[] population in populations)
+            {
+                double sum = 0;
+                Chromosome bestSol = population[0];
+                foreach (Chromosome solution in population)
+                {
+                    sum += solution.PenaltyPoints;
+                    if (bestSol.PenaltyPoints > solution.PenaltyPoints)
+                        bestSol = solution;
+                }
+                
+                Console.WriteLine("\n------------------");
+                Console.WriteLine("Generation number " + ind++);
+                Console.WriteLine("Avg penalty points (lower the better): " + sum / population.Length);
+                Console.WriteLine("Best solution in generation: " + bestSol.GetSolutionInfo());
+                Console.WriteLine("\n------------------");
+
+                if (bestSolOfAll.PenaltyPoints > bestSol.PenaltyPoints)
+                {
+                    bestSolOfAll = bestSol;
+                    bestGenSolInd = ind - 1;
+                }
+            }
+            Console.WriteLine("\n------------------");
+            Console.WriteLine("Generation number of best solution" + bestGenSolInd);
+            Console.WriteLine("Best solution in generations: " + bestSolOfAll.GetSolutionInfo());
+
+
+
+            var soloSolution = genAlg.GetSolution(problem, 10000);
+            Console.WriteLine("\n------------------");
+            Console.WriteLine("Generation number of best solution" + soloSolution);
+            Console.WriteLine("Best solution in generations: " + soloSolution.GetSolutionInfo());
+        }
+
+        private static void Test1()
+        {
             Chromosome[] population = ChromosomeTesting.GetBasicSolutions().ToArray();
             foreach (Chromosome sol in population)
             {
@@ -111,27 +165,6 @@ namespace ConsoleMenu
                     }
                 }
             }
-            int x = 1;
-
-
-
-            //var xd = ChromosomeTesting.GetBasicSolutions();
-            //int index = 1;
-            //Console.WriteLine(xd[0].GetSolutionInfo());
-            //foreach (Path path in xd[0].Paths)
-            //{
-            //    Console.WriteLine("Path " + index + " Before:");
-            //    foreach (var segment in path.Segments)
-            //    {
-            //        Console.WriteLine("Direction: " + segment.Direction + " | " + segment.Length);
-            //    }
-            //    path.FixPath();
-            //    Console.WriteLine("Path " + index++ + " After:");
-            //    foreach (var segment in path.Segments)
-            //    {
-            //        Console.WriteLine("Direction: " + segment.Direction + " | " + segment.Length);
-            //    }
-            //}
         }
     }
 }

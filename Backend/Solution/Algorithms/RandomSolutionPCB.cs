@@ -7,9 +7,16 @@ namespace Backend.Solution.Algorithms
 {
     public class RandomSolutionPCB : SolutionPCB
     {
+        public RandomSolutionPCB():base()
+        {
+
+        }
+        public RandomSolutionPCB(int seed) : base(seed)
+        {
+
+        }
         public override Chromosome GetSolution(ProblemPCB problem)
         {
-            int iterations = 0;
             Chromosome solution = new Chromosome(problem) { 
                 Paths = new List<Path>()
             };
@@ -33,7 +40,6 @@ namespace Backend.Solution.Algorithms
                 {
 
                     Segment newSegment = new Segment();
-                    iterations++;
 
                     // Random direction, filtering impossible options
                     List<char> availableDirections = new List<char>();
@@ -175,9 +181,14 @@ namespace Backend.Solution.Algorithms
 
                 // Adding new path
                 solution.Paths.Add(newPath);
-
+                var xd = newPath.Segments.ConvertAll(x => x.Clone()).ToArray();
+                var checkEnd = new Point(pointTuple.Item1).MoveToPoint(ref xd);
+                if (!checkEnd.Equals(pointTuple.Item2))
+                {
+                    int x = 1;
+                }
             }
-
+            
             return solution;
         }
 

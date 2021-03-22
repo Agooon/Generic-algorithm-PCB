@@ -7,11 +7,12 @@ namespace Backend.Solution.Algorithms.GenericFunctionality
     {
         public override ref Chromosome Mutate(ref Chromosome solution, double Pm)
         {
-            // Checking whether mutation will occur
-            if (Rnd.NextDouble() > Pm)
+            // Checking whether mutation will occu  r
+            if (Rnd.NextDouble() <= Pm)
                 return ref solution;
 
-            Path path = solution.Paths[new Random().Next(0, solution.Paths.Count)];
+            int pathId = Rnd.Next(0, solution.Paths.Count);
+            Path path = solution.Paths[pathId];
 
             int chosenSegmentInd = Rnd.Next(0, path.Segments.Count);
             Segment chosenSegment = new Segment()

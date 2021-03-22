@@ -32,5 +32,10 @@
             }
             return ref population[population.Length - 1];
         }
+
+        public override ref Chromosome Select(ref Chromosome[] population, int value)
+        {
+            return ref Select(ref population);
+        }
     }
 }

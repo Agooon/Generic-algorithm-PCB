@@ -11,6 +11,13 @@ namespace Backend.Solution
         public char Direction { get; set; }
         public int Length { get; set; }
 
+        public Segment Clone()
+        {
+            return new Segment { 
+                Direction= Direction,
+                Length = Length
+            };
+        }
         public bool OppositeDir(char direction)
         {
             if (Direction == Globals.Up && direction == Globals.Down)

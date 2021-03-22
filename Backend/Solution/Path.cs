@@ -1,4 +1,5 @@
 ﻿using Backend.UtilityClasses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,6 +12,26 @@ namespace Backend.Solution
 
         public Point[] Points { get; set; } = null;
 
+        public Path Clone()
+        {
+            return new Path
+            {
+                StartingPoint = new Point(StartingPoint),
+                Segments = Segments.ConvertAll(x => x.Clone()),
+                Points = Points.Select(x => new Point(x)).ToArray()
+            };
+        }
+
+        public string GetStringPath()
+        {
+            string pathString = "";
+            int ind = 1;
+            foreach (Segment segment in Segments)
+            {
+                pathString += ind++ + ". " + segment.Direction + ": " + segment.Length+"\n";
+            }
+            return pathString;
+        }
 
         public Point[] RestartPoints()
         {
@@ -187,129 +208,101 @@ namespace Backend.Solution
             // Deleting non usefull segments
             for (int i = 1; i < Segments.Count; i++)
             {
-                if(Segments[i - 1].Direction == Segments[i].Direction)
+                if (Segments[i - 1].Direction == Segments[i].Direction)
                 {
-                    Segments[i-1].Length += Segments[i].Length;
+                    Segments[i - 1].Length += Segments[i].Length;
                     Segments[i].Length = 0;
                 }
             }
-            for (int i = Segments.Count-1; i >=0 ; i--)
+            for (int i = Segments.Count - 1; i >= 0; i--)
             {
                 if (Segments[i].Length <= 0)
                     Segments.RemoveAt(i);
             }
 
+
             if (crossAmount == 0)
                 return;
 
             List<Segment> newSegments = new List<Segment>();
-            List<Point> currentPoints = new List<Point>() { 
+            List<Point> currentPoints = new List<Point>() {
             StartingPoint
             };
             int length;
             Point currentPoint = new Point(StartingPoint);
-            Point currentPointB = null;
 
-            foreach (Segment segment in Segments)
+
+            for (int segInd = 0; segInd < Segments.Count; segInd++)
             {
-                length = segment.Length;
-                for (int i = 1; i <= segment.Length; i++)
+                length = Segments[segInd].Length;
+                bool found = false;
+                for (int i = 1; i <= Segments[segInd].Length; i++)
                 {
-                    bool foundOD = false;
-                    bool foundCP = false;
-                    currentPoint = new Point(currentPoint).Go(1, segment.Direction);
+                    currentPoint = new Point(currentPoint).Go(1, Segments[segInd].Direction);
                     if (currentPoints.Contains(currentPoint))
                     {
-                        currentPointB = new Point(currentPoint).GoBack(i, segment.Direction);
-                        for (int j = newSegments.Count - 1; j >= 0; j--)
+                        found = true;
+                        length -= i;
+                        if (currentPoint.Equals(StartingPoint))
                         {
-                            int sgLen = (segment.Length);
-                            // Going backwards to find the cross point
-                            for (int z = 0; z < sgLen; z++)
+                            newSegments.Clear();
+                        }
+                        else
+                        {
+                            // go until met, leave segments in path
+                            Point currentPointFrom = new Point(StartingPoint);
+                            for (int j = 0; j < newSegments.Count; j++)
                             {
-                                currentPointB = new Point(currentPointB).GoBack(1, newSegments[j].Direction);
-                                if (currentPoints.Contains(currentPointB))
+                                bool foundAtWay = false;
+                                for (int z = 1; z <= newSegments[j].Length; z++)
                                 {
-                                    if (newSegments[j].OppositeDir(segment.Direction))
+                                    currentPointFrom = currentPointFrom.Go(1, newSegments[j].Direction);
+                                    if (currentPointFrom.Equals(currentPoint))
                                     {
-                                        // When it's opposite direction we are gonna to subtract length until it reaches 0
-                                        newSegments[j].Length--;
-                                        length--;
-                                        foundOD = true;
-                                    }
-                                    else
-                                    {
-                                        length -= i;
-                                        foundCP = true;
-                                        currentPointB = new Point(currentPointB).Go(1, newSegments[j].Direction);
+                                        newSegments.RemoveRange(j + 1, newSegments.Count - j -1);
+                                        newSegments[j].Length = z;
+                                        if (newSegments[j].Length == 0)
+                                        {
+                                            newSegments.RemoveAt(j);
+                                        }
+                                        foundAtWay = true;
                                         break;
                                     }
                                 }
-                            }
-                            if (foundOD)
-                            {
-                                currentPoint = new Point(currentPointB);
-                                if (newSegments[j].Length <= 0)
-                                    newSegments.RemoveAt(j);
-                                break;
-                            }
-                            if (foundCP)
-                            {
-                                break;
-                            }
-                            newSegments.RemoveAt(j);
-                        }
-                    }
-                    if (foundCP)
-                    {
-                        // Go until we find the crossPoint
-                        for (int j = newSegments.Count-1; j >=0 ; j--)
-                        {
-                            int sgLen = newSegments[j].Length;
-                            bool found = false;
-                            // Going backwards to find the cross point
-                            for (int z = 0; z < sgLen; z++)
-                            {
-                                currentPointB = new Point(currentPointB).GoBack(1, newSegments[j].Direction);
-                                newSegments[j].Length--;
-                                if (currentPointB.Equals(currentPoint))
-                                {
-                                    found = true;
+                                if (foundAtWay)
                                     break;
-                                }
                             }
-                            if (newSegments[j].Length <= 0)
-                                newSegments.RemoveAt(j);
-                            else
-                                currentPoint = new Point(currentPointB).Go(length, segment.Direction);
-                            if (found)
-                                break;
                         }
                     }
-                    if (foundCP || foundOD)
-                    {
-                        currentPoints.Clear();
-
-                        Path tempPath = new Path()
-                        {
-                            StartingPoint = StartingPoint,
-                            Segments = newSegments
-                        };
-                        currentPoints.AddRange(tempPath.GetAllPoints());
-                        break;
-                    }
-                    else
-                    {   
+                    if (!found)
                         currentPoints.Add(currentPoint);
-                    }
+                    else
+                        break;
+
                 }
 
+                if (found)
+                {
+                    if (length != 0)
+                    {
+                        Segments[segInd].Length = length;
+                        segInd--;
+                    }
+                    Path tempPath = new Path()
+                    {
+                        Segments = newSegments,
+                        StartingPoint = StartingPoint
+                    };
+                    currentPoints.Clear();
+                    currentPoints.AddRange(tempPath.GetAllPoints());
+
+                }
                 // Adding new Segment, CrossPoint may happend at the end of segment
                 // checking if path is needed or can be skipped
-                if (length > 0)
+                else if (length > 0)
                 {
                     // Merging two segemnts with the same direction
-                    if (newSegments.Count != 0 && newSegments.Last().Direction == segment.Direction)
+                    if (newSegments.Count != 0 && newSegments.Last().Direction == Segments[segInd].Direction)
                     {
                         newSegments[newSegments.Count - 1].Length += length;
                     }
@@ -318,19 +311,22 @@ namespace Backend.Solution
                         newSegments.Add(new Segment()
                         {
                             Length = length,
-                            Direction = segment.Direction
+                            Direction = Segments[segInd].Direction
                         });
                     }
                 }
+                
 
             }
 
+
             Segments = newSegments;
+
             // Restarting the points
             points.Clear();
             points.AddRange(RestartPoints());
             crossAmount += points.GroupBy(x => new { x.X, x.Y }).Where(x => x.Count() > 1).Sum(_ => _.Count() - 1);
         }
-    }
 
+    }
 }

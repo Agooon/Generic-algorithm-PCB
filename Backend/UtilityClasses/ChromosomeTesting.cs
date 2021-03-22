@@ -22,27 +22,47 @@ namespace Backend.UtilityClasses
                        new Segment()
                        {
                            Direction = Globals.Up,
-                           Length = 3
-                       },
-                       new Segment()
-                       {
-                           Direction = Globals.Right,
-                           Length = 4
-                       },
-                       new Segment()
-                       {
-                           Direction = Globals.Left,
-                           Length = 4
-                       },
-                       new Segment()
-                       {
-                           Direction = Globals.Down,
                            Length = 2
                        },
                        new Segment()
                        {
                            Direction = Globals.Right,
-                           Length = 4
+                           Length =2
+                       },
+                       new Segment()
+                       {
+                           Direction = Globals.Down,
+                           Length = 1
+                       },
+                       new Segment()
+                       {
+                           Direction = Globals.Right,
+                           Length = 1
+                       },
+                       new Segment()
+                       {
+                           Direction = Globals.Up,
+                           Length = 1
+                       },
+                       new Segment()
+                       {
+                           Direction = Globals.Right,
+                           Length = 1
+                       },
+                       new Segment()
+                       {
+                           Direction = Globals.Left,
+                           Length = 3
+                       },
+                       new Segment()
+                       {
+                           Direction = Globals.Down,
+                           Length = 1
+                       },
+                       new Segment()
+                       {
+                           Direction = Globals.Right,
+                           Length = 3
                        },
                        new Segment()
                        {

@@ -14,5 +14,6 @@ namespace Backend.Solution.Algorithms.GenericFunctionality
         }
         public Random Rnd { get; set; }
         public abstract ref Chromosome Select(ref Chromosome[] population);
+        public abstract ref Chromosome Select(ref Chromosome[] population, int value);
     }
 }

@@ -8,17 +8,18 @@ namespace Backend.Problem
 {
     public class ProblemPCB
     {
-        public ProblemPCB(string filePath)
-        {
-            PointPairs = new List<Tuple<Point, Point>>();
-            ReadData(filePath);
-        }
         public int Width { get; set; }
         public int Height { get; set; }
 
         public List<Tuple<Point, Point>> PointPairs { get; set; }
 
         public Chromosome ActualSolution { get; set; }
+
+        public ProblemPCB(string filePath)
+        {
+            PointPairs = new List<Tuple<Point, Point>>();
+            ReadData(filePath);
+        }
 
         private void ReadData(string filePath)
         {
