@@ -60,13 +60,13 @@ namespace Backend.Solution.Algorithms
 
             currentPopulation[0] = randSol.GetSolution(problem);
             currentPopulation[0].SetPenaltyPoints();
-            Chromosome bestSolution = currentPopulation[0];
+            Chromosome bestSolutionAll = currentPopulation[0];
             for (int i = 1; i < AmountOfPopulation; i++)
             {
                 currentPopulation[i] = randSol.GetSolution(problem);
                 currentPopulation[i].SetPenaltyPoints();
-                if (bestSolution.PenaltyPoints > currentPopulation[i].PenaltyPoints)
-                    bestSolution = currentPopulation[i];
+                if (bestSolutionAll.PenaltyPoints > currentPopulation[i].PenaltyPoints)
+                    bestSolutionAll = currentPopulation[i];
             }
 
             for (int i = 0; i < iterations; i++)
@@ -86,13 +86,85 @@ namespace Backend.Solution.Algorithms
                     MutateOperator.Mutate(ref child, Pm);
                     child.SetPenaltyPoints();
                     nextPopulation[j] = child;
-                    if (bestSolution.PenaltyPoints > nextPopulation[j].PenaltyPoints)
-                        bestSolution = new Chromosome(nextPopulation[j]);
+                    if (bestSolutionAll.PenaltyPoints > child.PenaltyPoints)
+                        bestSolutionAll = new Chromosome(child);
                 }
                 currentPopulation = nextPopulation;
             }
 
-            return bestSolution;
+            return bestSolutionAll;
+        }
+
+        public Tuple<Chromosome, double[][]> GetSolutionDataExcel(ProblemPCB problem, int iterations)
+        {
+            Chromosome[] currentPopulation = new Chromosome[AmountOfPopulation];
+            RandomSolutionPCB randSol = new RandomSolutionPCB
+            {
+                Rnd = Rnd
+            };
+
+            double[][] scores = new double[iterations][];
+            // Initalization of population
+
+            currentPopulation[0] = randSol.GetSolution(problem);
+            currentPopulation[0].SetPenaltyPoints();
+            Chromosome bestSolutionAll = currentPopulation[0];
+            for (int i = 1; i < AmountOfPopulation; i++)
+            {
+                currentPopulation[i] = randSol.GetSolution(problem);
+                currentPopulation[i].SetPenaltyPoints();
+                if (bestSolutionAll.PenaltyPoints > currentPopulation[i].PenaltyPoints)
+                    bestSolutionAll = currentPopulation[i];
+            }
+
+            for (int i = 0; i < iterations; i++)
+            {
+                Chromosome[] nextPopulation = new Chromosome[AmountOfPopulation];
+                double bestSolPop = currentPopulation[0].PenaltyPoints;
+                double worstSolPop = currentPopulation[0].PenaltyPoints;
+                double sumPen = 0;
+
+                for (int j = 0; j < AmountOfPopulation; j++)
+                {
+                    Chromosome parent1 = SelectionOperator.Select(ref currentPopulation, TourmanteSize);
+                    Chromosome parent2 = SelectionOperator.Select(ref currentPopulation, TourmanteSize);
+
+                    Chromosome child;
+                    if (Rnd.NextDouble() < Px)
+                        child = CrossOperator.GetChild(ref parent1, ref parent2);
+                    else
+                        child = new Chromosome(parent1);
+
+                    MutateOperator.Mutate(ref child, Pm);
+                    child.SetPenaltyPoints();
+                    nextPopulation[j] = child;
+                    if (bestSolutionAll.PenaltyPoints > child.PenaltyPoints)
+                        bestSolutionAll = new Chromosome(child);
+
+                    sumPen += nextPopulation[j].PenaltyPoints;
+                    if (bestSolPop > nextPopulation[j].PenaltyPoints)
+                    {
+                        bestSolPop = nextPopulation[j].PenaltyPoints;
+                    }
+                    if (worstSolPop < nextPopulation[j].PenaltyPoints)
+                    {
+                        worstSolPop = nextPopulation[j].PenaltyPoints;
+                    }
+                }
+
+                double avg = sumPen / nextPopulation.Length;
+                double std = Math.Sqrt(nextPopulation.Select(x => Math.Pow((x.PenaltyPoints - avg), 2)).Sum() / nextPopulation.Length);
+
+                scores[i] = new double[4];
+                scores[i][0] = bestSolPop;
+                scores[i][1] = worstSolPop;
+                scores[i][2] = avg;
+                scores[i][3] = std;
+
+                currentPopulation = nextPopulation;
+            }
+
+            return new Tuple<Chromosome, double[][]>(bestSolutionAll, scores);
         }
 
         public List<Chromosome[]> GetSolutionData(ProblemPCB problem, int iterations)
@@ -137,8 +209,6 @@ namespace Backend.Solution.Algorithms
                     MutateOperator.Mutate(ref child, Pm);
                     child.SetPenaltyPoints();
                     nextPopulation[j] = child;
-                    if (bestSolution.PenaltyPoints > nextPopulation[j].PenaltyPoints)
-                        bestSolution = nextPopulation[j];
 
                 }
                 populations.Add(nextPopulation);

@@ -10,9 +10,14 @@ namespace Backend.Solution.Algorithms.GenericFunctionality
             // Checking whether mutation will occu  r
             if (Rnd.NextDouble() <= Pm)
                 return ref solution;
+            
 
             int pathId = Rnd.Next(0, solution.Paths.Count);
             Path path = solution.Paths[pathId];
+
+            // For repearing solution later
+            int firstCrosses = solution.GetCrossCount();
+            Path pathSecur = path.Clone();
 
             int chosenSegmentInd = Rnd.Next(0, path.Segments.Count);
             Segment chosenSegment = new Segment()
@@ -35,6 +40,7 @@ namespace Backend.Solution.Algorithms.GenericFunctionality
             int splitPointVal = Rnd.Next(1, chosenSegment.Length);
             Point chosenPoint = startSegmentP.Go(splitPointVal, chosenSegment.Direction);
 
+            
             // Checking whether change will be orizontal or not
             if (chosenSegment.Direction == Globals.Left ||
                 chosenSegment.Direction == Globals.Right)
@@ -74,6 +80,11 @@ namespace Backend.Solution.Algorithms.GenericFunctionality
             }
 
             path.FixPath();
+
+            var x = solution.GetCrossCount();
+            if (x > 2 + firstCrosses* Globals.CrossExtraAllowed)
+                solution.Paths[pathId] = pathSecur;
+
             return ref solution;
         }
 
@@ -81,7 +92,7 @@ namespace Backend.Solution.Algorithms.GenericFunctionality
         {
             // Checking whether it's possible
 
-            int dirLength = Rnd.Next(1, solution.Problem.Height - chosenPoint.Y);
+            int dirLength = Rnd.Next(1,solution.Problem.Height - chosenPoint.Y);
             // Choosing the left or right part of segment
             // Left part
             if (Rnd.Next(0, 2) == 1)

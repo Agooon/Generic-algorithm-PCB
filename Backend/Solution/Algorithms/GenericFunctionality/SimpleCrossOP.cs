@@ -20,9 +20,9 @@ namespace Backend.Solution.Algorithms.GenericFunctionality
             for (int i = 0; i < par1.Paths.Count; i++)
             {
                 if (Rnd.NextDouble() > 0.5)
-                    childPaths.Add(par1.Paths[i]);
+                    childPaths.Add(par1.Paths[i].Clone());
                 else
-                    childPaths.Add(par2.Paths[i]);
+                    childPaths.Add(par2.Paths[i].Clone());
             }
             newChild.Paths = childPaths;
 

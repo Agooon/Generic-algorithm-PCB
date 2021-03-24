@@ -28,7 +28,7 @@ namespace Backend.Solution
             int ind = 1;
             foreach (Segment segment in Segments)
             {
-                pathString += ind++ + ". " + segment.Direction + ": " + segment.Length+"\n";
+                pathString += ind++ + ". " + segment.Direction + ": " + segment.Length + "\n";
             }
             return pathString;
         }
@@ -220,7 +220,6 @@ namespace Backend.Solution
                     Segments.RemoveAt(i);
             }
 
-
             if (crossAmount == 0)
                 return;
 
@@ -230,7 +229,6 @@ namespace Backend.Solution
             };
             int length;
             Point currentPoint = new Point(StartingPoint);
-
 
             for (int segInd = 0; segInd < Segments.Count; segInd++)
             {
@@ -259,7 +257,7 @@ namespace Backend.Solution
                                     currentPointFrom = currentPointFrom.Go(1, newSegments[j].Direction);
                                     if (currentPointFrom.Equals(currentPoint))
                                     {
-                                        newSegments.RemoveRange(j + 1, newSegments.Count - j -1);
+                                        newSegments.RemoveRange(j + 1, newSegments.Count - j - 1);
                                         newSegments[j].Length = z;
                                         if (newSegments[j].Length == 0)
                                         {
@@ -315,10 +313,9 @@ namespace Backend.Solution
                         });
                     }
                 }
-                
+
 
             }
-
 
             Segments = newSegments;
 

@@ -4,6 +4,8 @@ using Backend.Solution.Algorithms;
 using Backend.Solution.Algorithms.GenericFunctionality;
 using Backend.UtilityClasses;
 using System;
+using System.IO;
+using System.Linq;
 
 namespace ConsoleMenu
 {
@@ -11,57 +13,125 @@ namespace ConsoleMenu
     {
         static void Main(string[] args)
         {
-            //Chromosome[] population = ChromosomeTesting.GetBasicSolutions().ToArray();
-            //population[0].Paths[0].FixPath();
-            ProblemPCB problem = new ProblemPCB(Globals.PathFile + "\\zad1.txt");
+            ProblemPCB problem = new ProblemPCB(Globals.PathFile + "\\zad3.txt");
+
+            RandomSolutionPCB randAlg = new RandomSolutionPCB()
+            {
+                Rnd = new Random(1)
+            };
 
             GenericSolutionPCB genAlg = new GenericSolutionPCB()
             {
-                AmountOfPopulation = 100,
-                Pm = 0.2,
-                Px = 0.5,
-                TourmanteSize = 5
+                AmountOfPopulation = 200,
+                Pm = 0.3,
+                Px = 0.9,
+                TourmanteSize = 10,
+                Rnd = new Random(1)
             };
-            var populations = genAlg.GetSolutionData(problem, 4000);
-            Console.WriteLine("\n------------------\n");
+            //genAlg.SelectionOperator = new RouletteOP()
+            //{
+            //    Rnd = genAlg.Rnd
+            //};
+            int algAmount = 10;
+            int iterations = 150;
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            // the code that you want to measure comes here
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+
+            FileStream fs = new FileStream("data.txt", FileMode.Create);
+            using StreamWriter writeText = new StreamWriter(fs);
+            //string toWrite = "";
+            //double[][] finalScores = new double[iterations][];
+            //double[] bestValues = new double[algAmount];
+
+            //for (int i = 0; i < finalScores.Length; i++)
+            //{
+            //    finalScores[i] = new double[4];
+            //    finalScores[i][0] = double.PositiveInfinity;
+            //}
+            //for (int i = 0; i < algAmount; i++)
+            //{
+            //    var result = genAlg.GetSolutionDataExcel(problem, iterations);
 
 
-            int ind = 1;
-            int bestGenSolInd = 1;
-            Chromosome bestSolOfAll = populations[0][0];
-            foreach (Chromosome[] population in populations)
+            //    toWrite += writeText.NewLine+ i + writeText.NewLine;
+            //    int ind = 1;
+            //    for (int z = 0; z < result.Item2.Length; z++)
+            //    {
+            //        toWrite += ind++ + writeText.NewLine;
+            //        toWrite += "Best\tWorst\tAvg\tStd" + writeText.NewLine;
+            //        for (int j = 0; j < result.Item2[z].Length; j++)
+            //        {
+            //            if (j == 0)
+            //            {
+            //                if (result.Item2[z][j] < finalScores[z][j])
+            //                    finalScores[z][j] = result.Item2[z][j];
+            //            }
+            //            else if (j == 1)
+            //            {
+            //                if (result.Item2[z][j] > finalScores[z][j])
+            //                    finalScores[z][j] = result.Item2[z][j];
+            //            }
+            //            else
+            //            {
+            //                finalScores[z][j] += result.Item2[z][j];
+            //            }
+            //            // Best
+            //            // Worst
+            //            // Avg
+            //            // Std
+            //            toWrite += result.Item2[z][j] + "\t";
+            //        }
+            //        toWrite += writeText.NewLine;
+            //        bestValues[i] = result.Item1.PenaltyPoints;
+            //    }
+            //};
+            //writeText.WriteLine(toWrite);
+
+
+            //toWrite = "AVERAGES";
+
+            //toWrite += writeText.NewLine + "Best\tWorst\tAvg\tStd" + writeText.NewLine;
+            //for (int i = 0; i < finalScores.Length; i++)
+            //{
+            //    for (int j = 0; j < finalScores[0].Length; j++)
+            //    {
+            //        if (j != 0 && j != 1)
+            //        {
+            //            finalScores[i][j] = finalScores[i][j] / algAmount;
+            //        }
+            //        toWrite += finalScores[i][j] + "\t";
+            //    }
+            //    toWrite += writeText.NewLine;
+            //}
+            //writeText.WriteLine(toWrite);
+            //toWrite = writeText.NewLine+"Best Values:"+ writeText.NewLine;
+
+            //for (int i = 0; i < bestValues.Length; i++)
+            //{
+            //    toWrite += (i+1) + "\t";
+            //}
+
+            //toWrite += writeText.NewLine;
+
+            //for (int i = 0; i < bestValues.Length; i++)
+            //{
+            //    toWrite += bestValues[i] + "\t";
+            //}
+            //writeText.WriteLine(toWrite);
+
+
+            // Random
+            int randIter = 60000;
+            string toWrite2 = "Random" + writeText.NewLine;
+            var result = randAlg.GetSolutionDataExcel(problem, randIter);
+            for (int i = 0; i < result.Item2[0].Length; i++)
             {
-                double sum = 0;
-                Chromosome bestSol = population[0];
-                foreach (Chromosome solution in population)
-                {
-                    sum += solution.PenaltyPoints;
-                    if (bestSol.PenaltyPoints > solution.PenaltyPoints)
-                        bestSol = solution;
-                }
-                
-                Console.WriteLine("\n------------------");
-                Console.WriteLine("Generation number " + ind++);
-                Console.WriteLine("Avg penalty points (lower the better): " + sum / population.Length);
-                Console.WriteLine("Best solution in generation: " + bestSol.GetSolutionInfo());
-                Console.WriteLine("\n------------------");
-
-                if (bestSolOfAll.PenaltyPoints > bestSol.PenaltyPoints)
-                {
-                    bestSolOfAll = bestSol;
-                    bestGenSolInd = ind - 1;
-                }
+                toWrite2 += result.Item2[0][i]+"\t";
             }
-            Console.WriteLine("\n------------------");
-            Console.WriteLine("Generation number of best solution" + bestGenSolInd);
-            Console.WriteLine("Best solution in generations: " + bestSolOfAll.GetSolutionInfo());
-
-
-
-            var soloSolution = genAlg.GetSolution(problem, 10000);
-            Console.WriteLine("\n------------------");
-            Console.WriteLine("Generation number of best solution" + soloSolution);
-            Console.WriteLine("Best solution in generations: " + soloSolution.GetSolutionInfo());
+            writeText.WriteLine(toWrite2);
         }
 
         private static void Test1()
@@ -71,7 +141,7 @@ namespace ConsoleMenu
             {
                 Console.WriteLine("\n---Before--------\n");
                 Console.WriteLine(sol.GetSolutionInfo());
-                foreach (Path path in sol.Paths)
+                foreach (Backend.Solution.Path path in sol.Paths)
                 {
                     path.FixPath();
                 }

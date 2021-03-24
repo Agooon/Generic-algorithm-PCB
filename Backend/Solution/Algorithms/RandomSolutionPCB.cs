@@ -2,6 +2,7 @@
 using Backend.UtilityClasses;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Backend.Solution.Algorithms
 {
@@ -211,6 +212,50 @@ namespace Backend.Solution.Algorithms
             Console.WriteLine("\n\nBest Solution: \n" + bestSolution.GetSolutionInfo());
 
             return bestSolution;
+        }
+
+        public Tuple<Chromosome, double[][]> GetSolutionDataExcel(ProblemPCB problem, int iterations)
+        {
+            Chromosome bestSolution = null;
+            double[][] scores = new double[iterations][];
+
+            double[] savedScores = new double[iterations];
+
+            double bestSolPop = double.PositiveInfinity;
+            double worstSolPop = 0;
+            double sumPen = 0;
+
+            for (int i = 0; i < iterations; i++)
+            {
+                //Console.WriteLine("...RandomSolution starts...");
+                Chromosome newSolution = new RandomSolutionPCB().GetSolution(problem);
+                newSolution.SetPenaltyPoints();
+
+
+                sumPen += newSolution.PenaltyPoints;
+                if (bestSolPop > newSolution.PenaltyPoints)
+                {
+                    bestSolPop = newSolution.PenaltyPoints;
+                    bestSolution = newSolution;
+                }
+                if (worstSolPop < newSolution.PenaltyPoints)
+                {
+                    worstSolPop = newSolution.PenaltyPoints;
+                }
+                savedScores[i] = newSolution.PenaltyPoints;
+            }
+            double avg = sumPen / iterations;
+            double std = Math.Sqrt(savedScores.Select(x => Math.Pow((x - avg), 2)).Sum() / iterations);
+
+            scores[0] = new double[4];
+            scores[0][0] = bestSolPop;
+            scores[0][1] = worstSolPop;
+            scores[0][2] = avg;
+            scores[0][3] = std;
+
+            
+
+            return new Tuple<Chromosome, double[][]>(bestSolution, scores);
         }
     }
 }
