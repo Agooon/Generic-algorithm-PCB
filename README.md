@@ -10,4 +10,4 @@ Program, which shows a problem of finding best path to connect points on printed
 - My own solution for repairing path (after for example crossing itself)
 
 ## Research with comparing generic and random algorithms
-Can be found in Sierakowski-Adam-Sprawozdanie.pdf
+Can be found in **Sierakowski-Adam-Sprawozdanie.pdf**
